@@ -1,7 +1,6 @@
 package barkup
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/minio/minio-go"
@@ -35,16 +34,7 @@ func (x *DigitalOcean) Store(result *ExportResult, directory string) *Error {
 		log.Fatal(err)
 	}
 
-	// List all Spaces.
-	spaces, err := client.ListBuckets()
-	if err != nil {
-		log.Fatal(err)
-	}
-	for _, space := range spaces {
-		fmt.Println(space.Name)
-	}
-
-	_, err = client.FPutObject(directory, result.Filename(), result.Path, minio.PutObjectOptions{ContentType: result.MIME})
+	_, err = client.FPutObject(x.Space, result.Filename(), result.Path, minio.PutObjectOptions{ContentType: result.MIME})
 	if err != nil {
 		log.Fatalln(err)
 	}
