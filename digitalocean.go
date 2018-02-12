@@ -34,7 +34,7 @@ func (x *DigitalOcean) Store(result *ExportResult, directory string) *Error {
 		log.Fatal(err)
 	}
 
-	_, err = client.FPutObject(x.Space, result.Filename(), result.Path, minio.PutObjectOptions{ContentType: result.MIME})
+	_, err = client.FPutObject(x.Space, directory+result.Filename(), result.Path, minio.PutObjectOptions{ContentType: result.MIME})
 	if err != nil {
 		log.Fatalln(err)
 	}
