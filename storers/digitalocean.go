@@ -3,7 +3,8 @@ package storers
 import (
 	"log"
 
-	"github.com/minio/minio-go"
+	"github.com/FUNExtreme/barkup"
+	minio "github.com/minio/minio-go"
 )
 
 // DigitalOcean is a `Storer` interface that puts an ExportResult to the specified DigitalOcean space.
@@ -22,7 +23,7 @@ type DigitalOcean struct {
 }
 
 // Store puts an `ExportResult` struct to an DigitalOcean space within the specified directory
-func (x *DigitalOcean) Store(result *ExportResult, directory string) *Error {
+func (x *DigitalOcean) Store(result *barkup.ExportResult, directory string) *barkup.Error {
 
 	if result.Error != nil {
 		return result.Error
@@ -39,5 +40,5 @@ func (x *DigitalOcean) Store(result *ExportResult, directory string) *Error {
 		log.Fatalln(err)
 	}
 
-	return makeErr(err, "")
+	return barkup.MakeErr(err, "")
 }

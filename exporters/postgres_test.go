@@ -3,6 +3,8 @@ package exporters
 import (
 	"strings"
 	"testing"
+
+	"github.com/FUNExtreme/barkup"
 )
 
 func Test_Postgres_Export_Pass(t *testing.T) {
@@ -16,7 +18,7 @@ func Test_Postgres_Export_Pass(t *testing.T) {
 	PGDumpCmd = "true"
 
 	result := p.Export()
-	expect(t, result.Error, (*Error)(nil))
+	expect(t, result.Error, (*barkup.Error)(nil))
 }
 
 func Test_Postgres_Export_FailDump(t *testing.T) {
@@ -30,7 +32,7 @@ func Test_Postgres_Export_FailDump(t *testing.T) {
 	PGDumpCmd = "false"
 
 	result := p.Export()
-	refute(t, result.Error, (*Error)(nil))
+	refute(t, result.Error, (*barkup.Error)(nil))
 }
 
 func Test_Postgres_optionsDump(t *testing.T) {

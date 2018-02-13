@@ -6,6 +6,7 @@ import (
 
 	"github.com/goamz/goamz/aws"
 	"github.com/goamz/goamz/s3"
+	"github.com/FUNExtreme/barkup"
 )
 
 // S3 is a `Storer` interface that puts an ExportResult to the specified S3 bucket. Don't use your main AWS keys for this!! Create read-only keys using IAM
@@ -29,7 +30,7 @@ type S3 struct {
 }
 
 // Store puts an `ExportResult` struct to an S3 bucket within the specified directory
-func (x *S3) Store(result *ExportResult, directory string) *Error {
+func (x *S3) Store(result *barkup.ExportResult, directory string) *barkup.Error {
 
 	if result.Error != nil {
 		return result.Error

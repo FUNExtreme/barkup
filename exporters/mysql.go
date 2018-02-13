@@ -5,6 +5,8 @@ import (
 	"os"
 	"os/exec"
 	"time"
+
+	"github.com/FUNExtreme/barkup"
 )
 
 var (
@@ -32,22 +34,22 @@ type MySQL struct {
 }
 
 // Export produces a `mysqldump` of the specified database, and creates a gzip compressed tarball archive.
-func (x MySQL) Export() *ExportResult {
-	result := &ExportResult{MIME: "application/x-tar"}
+func (x MySQL) Export() *barkup.ExportResult {
+	result := &barkup.ExportResult{MIME: "application/x-tar"}
 
 	dumpPath := fmt.Sprintf(`bu_%v_%v.sql`, x.DB, time.Now().Unix())
 
 	options := append(x.dumpOptions(), fmt.Sprintf(`-r%v`, dumpPath))
 	out, err := exec.Command(MysqlDumpCmd, options...).Output()
 	if err != nil {
-		result.Error = makeErr(err, string(out))
+		result.Error = barkup.MakeErr(err, string(out))
 		return result
 	}
 
 	result.Path = dumpPath + ".tar.gz"
 	_, err = exec.Command(TarCmd, "-czf", result.Path, dumpPath).Output()
 	if err != nil {
-		result.Error = makeErr(err, string(out))
+		result.Error = barkup.MakeErr(err, string(out))
 		return result
 	}
 	os.Remove(dumpPath)

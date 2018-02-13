@@ -1,9 +1,11 @@
 package storers
 
 import (
-	"launchpad.net/goamz/aws"
 	"os"
 	"testing"
+
+	"github.com/FUNExtreme/barkup"
+	"launchpad.net/goamz/aws"
 )
 
 func Test_S3_Store_Success(t *testing.T) {
@@ -21,7 +23,7 @@ func Test_S3_Store_Success(t *testing.T) {
 	}
 
 	err := s.Store(&ExportResult{"test/test.txt", "text/plain", nil}, "test/")
-	expect(t, err, (*Error)(nil))
+	expect(t, err, (*barkup.Error)(nil))
 }
 
 func Test_S3_Store_Fail(t *testing.T) {
@@ -40,7 +42,7 @@ func Test_S3_Store_Fail(t *testing.T) {
 
 	_, _ = os.Create("test/test.txt")
 	err := s.Store(&ExportResult{"test/test.txt", "text/plain", nil}, "test/")
-	refute(t, err, (*Error)(nil))
+	refute(t, err, (*barkup.Error)(nil))
 }
 
 func Test_S3_Store_ExportError(t *testing.T) {
@@ -52,6 +54,6 @@ func Test_S3_Store_ExportError(t *testing.T) {
 	}
 
 	_, _ = os.Create("test/test.txt")
-	err := s.Store(&ExportResult{"", "text/plain", &Error{}}, "test/")
+	err := s.Store(&barkup.ExportResult{"", "text/plain", &barkup.Error{}}, "test/")
 	refute(t, err, nil)
 }

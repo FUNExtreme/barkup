@@ -23,7 +23,7 @@ func (e Error) Error() string {
 	return e.err.Error()
 }
 
-func makeErr(err error, out string) *Error {
+func MakeErr(err error, out string) *Error {
 	if err != nil {
 		return &Error{
 			err:       err,
@@ -56,7 +56,7 @@ type ExportResult struct {
 func (x *ExportResult) To(directory string, store Storer) *Error {
 	if store == nil {
 		out, err := exec.Command("mv", x.Path, directory+x.Filename()).Output()
-		return makeErr(err, string(out))
+		return MakeErr(err, string(out))
 	}
 
 	storeErr := store.Store(x, directory)
@@ -65,7 +65,7 @@ func (x *ExportResult) To(directory string, store Storer) *Error {
 	}
 
 	err := os.Remove(x.Path)
-	return makeErr(err, "")
+	return MakeErr(err, "")
 }
 
 // Filename returns the just filename component of the `Path` attribute
