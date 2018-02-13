@@ -1,9 +1,7 @@
 package exporters
 
 import (
-	"fmt"
 	"os/exec"
-	"time"
 
 	"github.com/FUNExtreme/barkup"
 )
@@ -15,12 +13,10 @@ type FileSystem struct {
 }
 
 // Export produces a `mysqldump` of the specified database, and creates a gzip compressed tarball archive.
-func (x FileSystem) Export() *barkup.ExportResult {
+func (x FileSystem) Export(filename string) *barkup.ExportResult {
 	result := &barkup.ExportResult{MIME: "application/x-tar"}
 
-	dumpPath := fmt.Sprintf(`bu_%v_%v.sql`, x.Path, time.Now().Unix())
-
-	result.Path = dumpPath + ".tar.gz"
+	result.Path = filename + ".tar.gz"
 	out, err := exec.Command(barkup.TarCmd, "-czf", result.Path, x.Path).Output()
 	if err != nil {
 		result.Error = barkup.MakeErr(err, string(out))

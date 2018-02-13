@@ -9,7 +9,7 @@ import (
 
 // Exporter is expected to export "something" to a file and return a complete `ExportResult` struct (`Path`, `MIME`, `Error`). If any error occurs during it's work, it should set the error to the result's `Error` attribute
 type Exporter interface {
-	Export() (*ExportResult, *Error)
+	Export(filename string) (*ExportResult, *Error)
 }
 
 // Error can ship a cmd output as well as the start interface. Useful for understanding why a system command (exec.Command) failed

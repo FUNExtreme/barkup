@@ -3,7 +3,6 @@ package exporters
 import (
 	"fmt"
 	"os/exec"
-	"time"
 
 	"github.com/FUNExtreme/barkup"
 )
@@ -25,9 +24,9 @@ type RethinkDB struct {
 }
 
 // Export produces a gzip compressed tarball archive of the rethink cluster (or targetted DBs/tables)
-func (x RethinkDB) Export() *barkup.ExportResult {
+func (x RethinkDB) Export(filename string) *barkup.ExportResult {
 	result := &barkup.ExportResult{MIME: "application/x-tar"}
-	result.Path = fmt.Sprintf(`bu_%v_%v.tar.gz`, x.Name, time.Now().Unix())
+	result.Path = filename + ".tar.gz"
 	options := append(x.dumpOptions(), fmt.Sprintf(`-f%v`, result.Path))
 	out, err := exec.Command(barkup.RethinkCmd, options...).Output()
 	if err != nil {
