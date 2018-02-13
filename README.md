@@ -7,9 +7,9 @@ https://travis-ci.org/keighl/barkup) [![Coverage Status](https://coveralls.io/re
 
 Barkup is a library for backing things up. It provides tools for writing bare-bones backup programs in Go. The library is broken out into **exporters** and **storers**. Currently, those are:
 
-**Exporters:** `MySQL` `Postgres` `RethinkDB`
+**Exporters:** `File system` `MySQL` `Postgres` `RethinkDB`
 
-**Storers:** `S3`
+**Storers:** `DigitalOcean` `S3`
 
 ## Quick Example (mysql to s3)
 
@@ -40,8 +40,8 @@ func main() {
     }
 
     // Export the database, and send it to the
-    // bucket in the `db_backups` folder
-    err := mysql.Export().To("db_backups/", s3)
+    // bucket in the `db_backups` folder with filename `mybackup`
+    err := mysql.Export("mybackup").To("db_backups/", s3)
     if err != nil {
         panic(err)
     }
@@ -72,14 +72,14 @@ This is especially the case for the RethinkDB exporter `rethink-dump` which exec
 
 ## Exporters
 
-Exporters provide a common interface for backing things up via the `Export()` method. It writes an export file to the local disk, and returns an `ExportResult` which can be passed on to a [storer](#storers), or to another location on the disk.
+Exporters provide a common interface for backing things up via the `Export(filename string)` method. It writes an export file to the local disk, and returns an `ExportResult` which can be passed on to a [storer](#storers), or to another location on the disk.
 
 ```go
 // Exporter
 mysql := &barkup.MySQL{...}
 
 // Export Result
-result := mysql.Export()
+result := mysql.Export("mybackup")
 if (result.Error != nil) { panic(result.Error) }
 
 // Send it to a directory path on a storer
@@ -108,8 +108,8 @@ mysql := &barkup.MySQL{
   Options: []string{"--skip-extended-insert"}
 }
 
-// Writes a file `./bu_DBNAME_TIMESTAMP.sql.tar.gz`
-result := mysql.Export()
+// Writes a file `./mymysqlbackup.sql.tar.gz`
+result := mysql.Export("mymysqlbackup")
 
 if (result.Error != nil) { panic(result.Error) }
 ```
@@ -134,8 +134,8 @@ postgres := &barkup.Postgres{
   Options: []string{"--no-owner"},
 }
 
-// Writes a file `./bu_DBNAME_TIMESTAMP.sql.tar.gz`
-result := postgres.Export()
+// Writes a file `./mypostgresbackup.sql.tar.gz`
+result := postgres.Export("mypostgresbackup")
 
 if (result.Error != nil) { panic(result.Error) }
 ```
@@ -170,8 +170,24 @@ rethink := &barkup.RethinkDB{
   Targets: []string{"site", "leads.contacts"},
 }
 
-// Writes a file `./bu_nightly_TIMESTAMP.tar.gz`
-result := rethink.Export()
+// Writes a file `./myrethinkdbbackup.tar.gz`
+result := rethink.Export("myrethinkdbbackup")
+if (result.Error != nil) { panic(result.Error) }
+```
+
+### FileSystem
+
+The FileSystem exporter uses `tar` to make a gzipped archive of the specified path.
+
+**Usage**
+
+```go
+fs := &barkup.FileSystem{
+  Path: "/var/backup",
+}
+
+// Writes a file `./myfilebackup.tar.gz`
+result := fs.Export("myfilebackup")
 if (result.Error != nil) { panic(result.Error) }
 ```
 
@@ -217,3 +233,25 @@ err := someExportResult.To("data/", s3)
 * ap-northeast-1
 * sa-east-1
 
+### DigitalOcean
+
+The S3 storer puts the exported file into a bucket at a specified directory. **Note,** you shouldn't use your global AWS credentials for this. Instead, [create bucket specific credentials via IAM.](http://blogs.aws.amazon.com/security/post/Tx3VRSWZ6B3SHAV/Writing-IAM-Policies-How-to-grant-access-to-an-Amazon-S3-bucket)
+
+**Usage**
+
+```go
+do := &barkup.DigitalOcean{
+  Region:       "ams3",
+  Space:        "backups",
+  AccessKey:    "***********",
+  ClientSecret: "****************",
+}
+
+err := someExportResult.To("data/", do)
+```
+
+**Region IDs**
+
+* nyc3
+* ams3
+* sgp1
