@@ -30,17 +30,23 @@ func testServer(code int, body string, contentType string) *httptest.Server {
 	}))
 }
 
+func createFile(path string) {
+	file, _ := os.Create(path)
+	defer file.Close()
+	return
+}
+
 //////
 
 func Test_ExportRestult_To_Move(t *testing.T) {
-	file, _ := os.Create("to_mv_test")
-	defer file.Close()
+	os.Mkdir("test", 0777)
+	createFile("to_mv_test")
 
 	e := ExportResult{"to_mv_test", "text/plain", nil}
-	storeErr := e.To("test/", nil)
+	storeErr := e.To("test\\", nil)
 	expect(t, storeErr, (*Error)(nil))
 
-	err := os.Remove("test/to_mv_test")
+	err := os.RemoveAll("test\\")
 	expect(t, err, nil)
 }
 
@@ -59,17 +65,25 @@ func (x *StoreFailureStory) Store(r *ExportResult, d string) *Error {
 }
 
 func Test_ExportRestult_To_Store(t *testing.T) {
-	_, _ = os.Create("test/test.txt")
+	os.Mkdir("test", 0777)
+	createFile("test/test.txt")
+
 	e := &ExportResult{"test/test.txt", "text/plain", nil}
 	err := e.To("test/", &StoreSuccessStory{})
 	expect(t, err, (*Error)(nil))
+
+	os.RemoveAll("test\\")
 }
 
 func Test_ExportRestult_To_Store_Fail(t *testing.T) {
-	_, _ = os.Create("test/test.txt")
+	os.Mkdir("test", 0777)
+	createFile("test/test.txt")
+
 	e := &ExportResult{"test/test.txt", "text/plain", nil}
 	err := e.To("test/", &StoreFailureStory{})
 	refute(t, err, (*Error)(nil))
+
+	os.RemoveAll("test\\")
 }
 
 /// Error
