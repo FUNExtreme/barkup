@@ -1,4 +1,4 @@
-package barkup
+package storers
 
 import (
 	"bufio"

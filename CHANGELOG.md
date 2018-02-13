@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.0.0 - 2018-02-13
+* Restructure source code (exporters and storers packages)
+
 ## 0.0.3 - 2015-01-30
 
 * RethinkDB exports

@@ -1,4 +1,4 @@
-package barkup
+package storers
 
 import (
 	"launchpad.net/goamz/aws"
