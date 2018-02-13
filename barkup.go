@@ -63,7 +63,7 @@ func (x *ExportResult) To(directory string, store Storer) *Error {
 		return storeErr
 	}
 
-	err := os.Remove(x.Path)
+	err := os.RemoveAll(x.Path)
 	return MakeErr(err, "")
 }
 
