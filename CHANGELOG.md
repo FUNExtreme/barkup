@@ -2,8 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
-## 1.0.0 - 2018-02-13
+## 0.1.1 - 2018-02-13
+
+* DigitalOcean storer
+
+## 0.1.0 - 2018-02-13
+
 * Restructure source code (exporters and storers packages)
+* Update goamz imports (moved from launchpad to github.com)
 
 ## 0.0.3 - 2015-01-30
 
