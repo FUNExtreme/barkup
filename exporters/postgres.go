@@ -8,11 +8,6 @@ import (
 	"github.com/FUNExtreme/barkup"
 )
 
-var (
-	// PGDumpCmd is the path to the `pg_dump` executable
-	PGDumpCmd = "pg_dump"
-)
-
 // Postgres is an `Exporter` interface that backs up a Postgres database via the `pg_dump` command
 type Postgres struct {
 	// DB Host (e.g. 127.0.0.1)
@@ -33,7 +28,7 @@ func (x Postgres) Export() *barkup.ExportResult {
 	result := &barkup.ExportResult{MIME: "application/x-tar"}
 	result.Path = fmt.Sprintf(`bu_%v_%v.sql.tar.gz`, x.DB, time.Now().Unix())
 	options := append(x.dumpOptions(), "-Fc", fmt.Sprintf(`-f%v`, result.Path))
-	out, err := exec.Command(PGDumpCmd, options...).Output()
+	out, err := exec.Command(barkup.PGDumpCmd, options...).Output()
 	if err != nil {
 		result.Error = barkup.MakeErr(err, string(out))
 	}

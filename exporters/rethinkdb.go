@@ -8,11 +8,6 @@ import (
 	"github.com/FUNExtreme/barkup"
 )
 
-var (
-	// RethinkCmd is the path to the `rethinkdb` executable
-	RethinkCmd = "rethinkdb"
-)
-
 // RethinkDB is an `Exporter` interface that backs up a RethinkDB cluster via the `rethinkdb dump` command
 type RethinkDB struct {
 	// Describe the dataset you're backing up. Used in filenaming
@@ -34,7 +29,7 @@ func (x RethinkDB) Export() *barkup.ExportResult {
 	result := &barkup.ExportResult{MIME: "application/x-tar"}
 	result.Path = fmt.Sprintf(`bu_%v_%v.tar.gz`, x.Name, time.Now().Unix())
 	options := append(x.dumpOptions(), fmt.Sprintf(`-f%v`, result.Path))
-	out, err := exec.Command(RethinkCmd, options...).Output()
+	out, err := exec.Command(barkup.RethinkCmd, options...).Output()
 	if err != nil {
 		result.Error = barkup.MakeErr(err, string(out))
 	}

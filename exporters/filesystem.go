@@ -8,9 +8,6 @@ import (
 	"github.com/FUNExtreme/barkup"
 )
 
-// TarCmd is the path to the `tar` executable
-var TarCmd = "tar"
-
 // FileSystem is an `Exporter` interface that backs up a folder on disk
 type FileSystem struct {
 	// Path (e.g. /var/backup)
@@ -24,7 +21,7 @@ func (x FileSystem) Export() *barkup.ExportResult {
 	dumpPath := fmt.Sprintf(`bu_%v_%v.sql`, x.Path, time.Now().Unix())
 
 	result.Path = dumpPath + ".tar.gz"
-	out, err := exec.Command(TarCmd, "-czf", result.Path, x.Path).Output()
+	out, err := exec.Command(barkup.TarCmd, "-czf", result.Path, x.Path).Output()
 	if err != nil {
 		result.Error = barkup.MakeErr(err, string(out))
 		return result

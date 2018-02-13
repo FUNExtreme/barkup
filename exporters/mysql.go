@@ -9,13 +9,6 @@ import (
 	"github.com/FUNExtreme/barkup"
 )
 
-var (
-	// TarCmd is the path to the `tar` executable
-	TarCmd = "tar"
-	// MysqlDumpCmd is the path to the `mysqldump` executable
-	MysqlDumpCmd = "mysqldump"
-)
-
 // MySQL is an `Exporter` interface that backs up a MySQL database via the `mysqldump` command
 type MySQL struct {
 	// DB Host (e.g. 127.0.0.1)
@@ -40,14 +33,14 @@ func (x MySQL) Export() *barkup.ExportResult {
 	dumpPath := fmt.Sprintf(`bu_%v_%v.sql`, x.DB, time.Now().Unix())
 
 	options := append(x.dumpOptions(), fmt.Sprintf(`-r%v`, dumpPath))
-	out, err := exec.Command(MysqlDumpCmd, options...).Output()
+	out, err := exec.Command(barkup.MysqlDumpCmd, options...).Output()
 	if err != nil {
 		result.Error = barkup.MakeErr(err, string(out))
 		return result
 	}
 
 	result.Path = dumpPath + ".tar.gz"
-	_, err = exec.Command(TarCmd, "-czf", result.Path, dumpPath).Output()
+	_, err = exec.Command(barkup.TarCmd, "-czf", result.Path, dumpPath).Output()
 	if err != nil {
 		result.Error = barkup.MakeErr(err, string(out))
 		return result
