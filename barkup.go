@@ -2,7 +2,6 @@ package barkup
 
 import (
 	"os"
-	"os/exec"
 	"path/filepath"
 )
 
@@ -55,8 +54,8 @@ type ExportResult struct {
 // To hands off an ExportResult to a `Storer` interface and invokes its Store() method. The directory argument is passed along too. If `store` is `nil`, the the method will simply move the export result to the specified directory (via the `mv` command)
 func (x *ExportResult) To(directory string, store Storer) *Error {
 	if store == nil {
-		out, err := exec.Command("mv", x.Path, directory+x.Filename()).Output()
-		return MakeErr(err, string(out))
+		err := os.Rename(x.Path, directory+x.Filename())
+		return MakeErr(err, "")
 	}
 
 	storeErr := store.Store(x, directory)
