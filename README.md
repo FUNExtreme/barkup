@@ -7,7 +7,7 @@ https://travis-ci.org/keighl/barkup) [![Coverage Status](https://coveralls.io/re
 
 Barkup is a library for backing things up. It provides tools for writing bare-bones backup programs in Go. The library is broken out into **exporters** and **storers**. Currently, those are:
 
-**Exporters:** `File system` `MySQL` `Postgres` `RethinkDB`
+**Exporters:** `FileSystem` `MySQL` `Postgres` `RethinkDB`
 
 **Storers:** `DigitalOcean` `S3`
 
@@ -235,7 +235,7 @@ err := someExportResult.To("data/", s3)
 
 ### DigitalOcean
 
-The S3 storer puts the exported file into a bucket at a specified directory. **Note,** you shouldn't use your global AWS credentials for this. Instead, [create bucket specific credentials via IAM.](http://blogs.aws.amazon.com/security/post/Tx3VRSWZ6B3SHAV/Writing-IAM-Policies-How-to-grant-access-to-an-Amazon-S3-bucket)
+The DigitalOcean storer puts the exported file into a space at a specified directory.
 
 **Usage**
 
