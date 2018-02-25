@@ -25,7 +25,7 @@ type RethinkDB struct {
 
 // Export produces a gzip compressed tarball archive of the rethink cluster (or targetted DBs/tables)
 func (x RethinkDB) Export(filename string) *barkup.ExportResult {
-	result := &barkup.ExportResult{MIME: "application/x-tar"}
+	result := &barkup.ExportResult{MIME: "application/gzip"}
 	result.Path = filename + ".tar.gz"
 	options := append(x.dumpOptions(), fmt.Sprintf(`-f%v`, result.Path))
 	out, err := exec.Command(barkup.RethinkCmd, options...).Output()

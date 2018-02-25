@@ -24,7 +24,7 @@ type Postgres struct {
 
 // Export produces a `pg_dump` of the specified database, and creates a gzip compressed tarball archive.
 func (x Postgres) Export(filename string) *barkup.ExportResult {
-	result := &barkup.ExportResult{MIME: "application/x-tar"}
+	result := &barkup.ExportResult{MIME: "application/gzip"}
 	result.Path = filename + ".sql.tar.gz"
 	options := append(x.dumpOptions(), "-Fc", fmt.Sprintf(`-f%v`, result.Path))
 	out, err := exec.Command(barkup.PGDumpCmd, options...).Output()
