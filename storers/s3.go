@@ -4,9 +4,9 @@ import (
 	"bufio"
 	"os"
 
+	"github.com/FUNExtreme/barkup"
 	"github.com/goamz/goamz/aws"
 	"github.com/goamz/goamz/s3"
-	"github.com/FUNExtreme/barkup"
 )
 
 // S3 is a `Storer` interface that puts an ExportResult to the specified S3 bucket. Don't use your main AWS keys for this!! Create read-only keys using IAM
@@ -38,14 +38,14 @@ func (x *S3) Store(result *barkup.ExportResult, directory string) *barkup.Error 
 
 	file, err := os.Open(result.Path)
 	if err != nil {
-		return makeErr(err, "")
+		return barkup.MakeErr(err, "")
 	}
 	defer file.Close()
 
 	buffy := bufio.NewReader(file)
 	stat, err := file.Stat()
 	if err != nil {
-		return makeErr(err, "")
+		return barkup.MakeErr(err, "")
 	}
 
 	size := stat.Size()
@@ -58,6 +58,6 @@ func (x *S3) Store(result *barkup.ExportResult, directory string) *barkup.Error 
 	s := s3.New(auth, aws.Regions[x.Region])
 	bucket := s.Bucket(x.Bucket)
 
-	err = bucket.PutReader(directory+result.Filename(), buffy, size, result.MIME, s3.BucketOwnerFull)
-	return makeErr(err, "")
+	err = bucket.PutReader(directory+result.Filename(), buffy, size, result.MIME, s3.BucketOwnerFull, s3.Options{})
+	return barkup.MakeErr(err, "")
 }
